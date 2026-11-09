@@ -147,15 +147,15 @@ def alphabeta(board, depth=6):
                 best_score, best_move = value, column
             # TODO 5 (Alpha-Beta): Update the appropriate bound.
             if maximizing:
-                alpha = ...
+                alpha = max(alpha, best_score) # float('-inf')
             else:
-                beta = ...
+                beta = min(beta, best_score) # float('inf')
             trace.update(node_id, score=best_score,
                          alpha=alpha if math.isfinite(alpha) else None,
                          beta=beta if math.isfinite(beta) else None)
 
             # TODO 6: Apply the pruning condition.
-            if ...:
+            if alpha >= beta:
                 skipped = moves[index + 1:]
                 if skipped:
                     trace.event("prune", node_id, skipped_moves=skipped,
