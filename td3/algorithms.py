@@ -220,7 +220,7 @@ def mcts(board, num_simulations=1000, exploration=math.sqrt(2), seed=None):
             # who moved into that child.
             node = max(
                 node.children,
-                key=lambda child: ...,
+                key=lambda child: (child.total_reward / child.visits) + exploration + math.sqrt(log_parent / child.visits)
             )
             trace.event("select", node.trace_id, iteration=iteration)
 
@@ -253,10 +253,17 @@ def mcts(board, num_simulations=1000, exploration=math.sqrt(2), seed=None):
             # TODO 8: Increment the visit count and accumulate reward.
             # A win earns 1, a draw 0.5, and a loss 0.
             # Evaluate from the perspective of the player who entered this node.
-            node.visits += ...
+            node.visits += 1
             previous_player = _other(node.player_to_move)
-            reward = ...
-            node.total_reward += ...
+
+            if winner is None:
+                reward = 0.5
+            elif winner == previous_player:
+                reward = 1.0
+            else:
+                reward = 0.0
+
+            node.total_reward += reward
             trace.update(node.trace_id, visits=node.visits,
                          mean_reward=round(node.total_reward / node.visits, 4))
             node = node.parent
